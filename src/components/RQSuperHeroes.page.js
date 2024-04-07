@@ -6,10 +6,15 @@ import { useState } from "react";
 export const RQSuperHeroesPage = () => {
   const [checked, setChecked] = useState(false);
 
-  const { isLoading, data, refetch } = useQuery({
-    queryKey: ["rq-super-heroes"],
-    queryFn: () =>
-      fetch("http://localhost:4000/superheroes").then((res) => res.json()),
+  const { isLoading, data } = useQuery({
+    // Using checked as dependency will allow the query to refetch when checked changes
+    queryKey: ["rq-super-heroes", checked],
+    queryFn: () => {
+      console.log(checked);
+      return fetch("http://localhost:4000/superheroes").then((res) =>
+        res.json()
+      );
+    },
   });
 
   if (isLoading) {
@@ -23,7 +28,6 @@ export const RQSuperHeroesPage = () => {
       <button
         onClick={() => {
           setChecked(!checked);
-          refetch();
         }}
       >
         Toggle Checked
